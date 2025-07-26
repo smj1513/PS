@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,13 +34,14 @@ public class Main {
 			}
 		}
 		bfs(targetX, targetY);
-
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < M; j++) {
-				System.out.print((graph[i][j] == 1 ? -1 : (graph[i][j] == 0 ? 0 : graph[i][j] - 2)) + " ");
+				sb.append((graph[i][j] == 1 ? -1 : (graph[i][j] == 0 ? 0 : graph[i][j] - 2))).append(" ");
 			}
-			System.out.println();
+			sb.append('\n');
 		}
+		System.out.println(sb.toString());
 	}
 
 	public static boolean valid(int x, int y) {
