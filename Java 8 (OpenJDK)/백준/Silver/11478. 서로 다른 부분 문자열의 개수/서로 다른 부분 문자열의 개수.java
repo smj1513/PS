@@ -1,4 +1,3 @@
-
 import java.util.*;
 
 public class Main {
@@ -9,9 +8,7 @@ public class Main {
         for (int i = 0; i < input.length(); i++) {
             for (int j = i; j <= input.length(); j++) {
                 String substring = input.substring(i, j);
-                if(!strings.contains(substring)){
-                    strings.add(substring);
-                }
+                strings.add(substring);
             }
         }
         System.out.println(strings.size()-1);
