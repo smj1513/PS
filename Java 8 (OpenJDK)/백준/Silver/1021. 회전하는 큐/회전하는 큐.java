@@ -25,15 +25,12 @@ public class Main {
 		for (int n : array) {
 			int targetIdx = deque.indexOf(n);
 			int mid = deque.size() / 2;
-			if (targetIdx <= mid) {
-				while (deque.peekFirst() != n) {
-					rotateLeft();
 
-				}
-			} else {
-				while (deque.peekFirst() != n) {
+			while(deque.peekFirst() != n){
+				if(targetIdx <= mid)
+					rotateLeft();
+				else
 					rotateRight();
-				}
 			}
 			deque.removeFirst();
 		}
