@@ -5,14 +5,13 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 class Egg {
-	final int s;
 	final int weight;
 	int durability;
 
 	Egg(int durability, int weight) {
 		this.durability = durability;
 		this.weight = weight;
-		this.s = durability;
+
 	}
 
 	void crash(Egg other) {
@@ -22,6 +21,12 @@ class Egg {
 
 	boolean isBroken() {
 		return this.durability <= 0;
+	}
+
+	void refresh(Egg other) {
+		this.durability += other.weight;
+		other.durability += this.weight;
+
 	}
 }
 
@@ -76,11 +81,8 @@ public class Main {
 				eggs[depth].crash(eggs[i]);
 				//다음 계란으로 넘어가서 재귀 호출
 				backTracking(depth + 1);
-
-
 				//상태 복원
-				eggs[depth].durability += eggs[i].weight;
-				eggs[i].durability += eggs[depth].weight;
+				eggs[depth].refresh(eggs[i]);
 			}
 			// 손에 든 계란은 깨지지 않았으면서, 다른 계란이 모두 깨져있다면,
 			// 다음 계란으로 이동
