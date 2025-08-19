@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+
+/*
+ * 최단 경로 문제
+ *
+ * */
+
 class Edge implements Comparable<Edge> {
     int vertax;
     int weight;
@@ -36,8 +42,8 @@ public class Main {
         }
         distance = new int[V + 1];
         visited = new boolean[V + 1];
-        Arrays.fill(distance, Integer.MAX_VALUE);
-        distance[start] = 0;
+        Arrays.fill(distance, Integer.MAX_VALUE); //최단 경로 배열을 초기화
+        distance[start] = 0; //시작점의 최단 경로는 0
         for (int i = 0; i < E; i++) {
             st = new StringTokenizer(br.readLine(), " ");
             int u = Integer.parseInt(st.nextToken());
@@ -51,12 +57,15 @@ public class Main {
         }
     }
 
+    //다익스트라는 기본적으로 그리디 알고리즘
+    //현재의 최단 경로가 이후의 최단경로를 보장한다 가정하여 구현
     static void dijkstra(int start) {
-        PriorityQueue<Edge> pq = new PriorityQueue<>();
+        PriorityQueue<Edge> pq = new PriorityQueue<>(); //우선 순위 큐를 사용하여 구현
         pq.offer(new Edge(start, 0));
         while (!pq.isEmpty()) {
             Edge current = pq.poll();
             if (!visited[current.vertax]) {
+                visited[current.vertax] = true;
                 for (Edge next : graph.get(current.vertax)) {
                     if (distance[next.vertax] > distance[current.vertax] + next.weight) {
                         distance[next.vertax] = distance[current.vertax] + next.weight;
