@@ -3,74 +3,70 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Main {
+	static final int[] dx = {-1, 0, 1, 0};
+	static final int[] dy = {0, -1, 0, 1};
+	static int M, N;
+	static int[][] map;
+	static boolean[][] visited;
 
-    static int[] dx = {0, -1, 0, 1};
-    static int[] dy = {-1, 0, 1, 0};
-    static int[][] tomato;
-    static boolean[][] visited;
-    static int N, M;
-    static List<int[]> startPoints = new ArrayList<>();
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+		M = Integer.parseInt(st.nextToken());
+		N = Integer.parseInt(st.nextToken());
+		map = new int[N][M];
+		visited = new boolean[N][M];
+		List<int[]> start = new ArrayList<>();
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine(), " ");
+			for (int j = 0; j < M; j++) {
+				int n = Integer.parseInt(st.nextToken());
+				map[i][j] = n;
+				if (n == 1) {
+					start.add(new int[]{i, j});
+				}
+			}
+		}
+		bfs(start);
+		int max = 0;
 
-    public static void main(String[] args) throws IOException {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if(map[i][j] == 0){
+					max = -1;
+					System.out.println(max);
+					return;
+				}
+				max = Math.max(max, map[i][j]);
+			}
+		}
+		System.out.println(max-1);
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int[] mn = Stream.of(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        M = mn[0];
-        N = mn[1];
-        tomato = new int[N][M];
-        visited = new boolean[N][M];
-        for (int i = 0; i < N; i++) {
-            String[] inputs = br.readLine().split(" ");
-            tomato[i] = new int[M];
-            for (int j = 0; j < M; j++) {
-                tomato[i][j] = Integer.parseInt(inputs[j]);
-                if (tomato[i][j] == 1) {
-                    startPoints.add(new int[]{i, j});
-                }
-            }
-        }
-        bfs();
-        int max = -1;
-        for(int[] arr: tomato){
-            for(int a : arr){
-                if(a == 0){
-                    System.out.println(-1);
-                    return;
-                }
-                max = Math.max(max, a);
-            }
-        }
-        if(max == 1){
-            System.out.println(0);
-        }else {
-            System.out.println(max - 1);
-        }
-    }
+	}
 
-    public static void bfs() {
-        Queue<int[]> queue = new ArrayDeque<>();
-        for(int[] startPoint : startPoints){
-            queue.add(new int[]{startPoint[0], startPoint[1]});
-            visited[startPoint[0]][startPoint[1]] = true;
-        }
-        while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            for (int i = 0; i < 4; i++) {
-                int drx = current[0] + dx[i];
-                int dry = current[1] + dy[i];
-                if (valid(drx, dry) && !visited[drx][dry] && tomato[drx][dry] != -1) {
-                    visited[drx][dry] = true;
-                    tomato[drx][dry] = tomato[current[0]][current[1]] + 1;
-                    queue.add(new int[]{drx, dry});
-                }
-            }
-        }
-    }
+	public static void bfs(List<int[]> points) {
+		Queue<int[]> queue = new ArrayDeque<>();
+		points.forEach(arr->{
+			visited[arr[0]][arr[1]] = true;
+			queue.add(arr);
+		});
+		while (!queue.isEmpty()) {
+			int[] current = queue.poll();
+			for (int i = 0; i < 4; i++) {
+				int drx = current[0] + dx[i];
+				int dry = current[1] + dy[i];
+				if (isValid(drx, dry) && !visited[drx][dry] && map[drx][dry] != -1) {
+					map[drx][dry] = map[current[0]][current[1]] + 1;
+					queue.add(new int[]{drx, dry});
+					visited[drx][dry] = true;
+				}
+			}
+		}
+	}
 
-    public static boolean valid(int x, int y) {
-        return 0 <= x && x < N && 0 <= y && y < M;
-    }
+	public static boolean isValid(int x, int y) {
+		return 0 <= x && x < N && 0 <= y && y < M;
+	}
 }
