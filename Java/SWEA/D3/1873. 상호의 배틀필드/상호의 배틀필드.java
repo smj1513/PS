@@ -79,26 +79,26 @@ public class Solution {
                 break;
             case 'U':
                 dir = 0;
-                move(dir);
+                move();
                 break;
             case 'D':
                 dir = 1;
-                move(dir);
+                move();
                 break;
             case 'L':
                 dir = 2;
-                move(dir);
+                move();
                 break;
             case 'R':
                 dir = 3;
-                move(dir);
+                move();
                 break;
         }
     }
 
-    public static void move(int direction) {
-        int drx = x + dx[direction];
-        int dry = y + dy[direction];
+    public static void move() {
+        int drx = x + dx[dir];
+        int dry = y + dy[dir];
         if (valid(drx, dry) && map[drx][dry] == '.') {
             map[x][y] = '.';
             x = drx;
