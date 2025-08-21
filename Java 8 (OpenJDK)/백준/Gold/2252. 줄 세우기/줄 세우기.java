@@ -23,31 +23,31 @@ public class Main {
             int from = Integer.parseInt(st.nextToken());
             int to = Integer.parseInt(st.nextToken());
             graph.get(from).add(to);
-            ++inDegree[to];
+            ++inDegree[to]; //진입차수 증가
         }
-        List<Integer> integers = topologySort();
-        integers.forEach(a -> System.out.print(a + " "));
-
+        String s = topologySort();
+        System.out.println(s);
     }
 
-    public static List<Integer> topologySort() {
-        List<Integer> result = new ArrayList<>();
+    public static String topologySort() {
+        StringBuilder stringBuilder = new StringBuilder();
         Queue<Integer> queue = new ArrayDeque<>();
         for (int i = 1; i <= V; i++) {
             if (inDegree[i] == 0) {
                 queue.add(i);
-                result.add(i);
+                stringBuilder.append(i).append(" ");
             }
         }
+        //큐 사이즈가 0이면 위상정렬 불가
         while (!queue.isEmpty()) {
             int cur = queue.poll();
             for (int next : graph.get(cur)) {
                 if (--inDegree[next] == 0) {
-                    result.add(next);
+                    stringBuilder.append(next).append(" ");
                     queue.add(next);
                 }
             }
         }
-        return result;
+        return stringBuilder.toString();
     }
 }
