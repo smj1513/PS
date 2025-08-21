@@ -2,8 +2,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -11,7 +9,7 @@ public class Main {
     static int[] dy = {0, 0, -1, 1};
     static char[][] map;
     static int R, C;
-    static Set<Character> history = new HashSet<>();
+    static boolean[] history = new boolean[26];
     static int cnt;
 
     public static void main(String[] args) throws IOException {
@@ -30,14 +28,14 @@ public class Main {
     }
 
     public static void dfs(int x, int y, int depth) {
-        history.add(map[x][y]);
+        history[map[x][y]-'A'] = true;
         cnt = Math.max(cnt, depth);
         for (int i = 0; i < 4; i++) {
             int drx = x + dx[i];
             int dry = y + dy[i];
-            if (isValid(drx, dry) && !history.contains(map[drx][dry])) {
+            if (isValid(drx, dry) && !history[map[drx][dry] - 'A']) {
                 dfs(drx, dry, depth + 1);
-                history.remove(map[drx][dry]);
+                history[map[drx][dry] -'A'] = false;
             }
         }
     }
