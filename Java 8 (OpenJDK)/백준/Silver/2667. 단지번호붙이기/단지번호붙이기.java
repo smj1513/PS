@@ -31,10 +31,12 @@ public class Main {
             }
         }
         Collections.sort(result);
-        System.out.println(result.size());
+        StringBuilder sb = new StringBuilder();
+        sb.append(result.size()).append("\n");
         for (Integer a : result) {
-            System.out.println(a);
+            sb.append(a).append("\n");
         }
+        System.out.println(sb);
 
 
     }
