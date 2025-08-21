@@ -9,7 +9,9 @@ public class Main {
     static int[] dy = {0, 0, -1, 1};
     static char[][] map;
     static int R, C;
-    static boolean[] history = new boolean[26];
+    static boolean[] history = new boolean[26]; // set 보다는 알파벳 배열을 사용하도록하자..
+    //HashSet을 사용하여 히스토리 기록시 300904KB 1992ms
+    //boolean 배열 사용시 15416kb	928ms
     static int cnt;
 
     public static void main(String[] args) throws IOException {
@@ -27,17 +29,22 @@ public class Main {
 
     }
 
-    public static void dfs(int x, int y, int depth) {
-        history[map[x][y]-'A'] = true;
+    public static boolean dfs(int x, int y, int depth) {
+        history[map[x][y] - 'A'] = true;
         cnt = Math.max(cnt, depth);
+        if (cnt == 26) {
+            return false;
+        }
         for (int i = 0; i < 4; i++) {
             int drx = x + dx[i];
             int dry = y + dy[i];
             if (isValid(drx, dry) && !history[map[drx][dry] - 'A']) {
-                dfs(drx, dry, depth + 1);
-                history[map[drx][dry] -'A'] = false;
+                boolean flag = dfs(drx, dry, depth + 1);
+                if(!flag) return flag;
+                history[map[drx][dry] - 'A'] = false;
             }
         }
+        return true;
     }
 
     public static boolean isValid(int x, int y) {
