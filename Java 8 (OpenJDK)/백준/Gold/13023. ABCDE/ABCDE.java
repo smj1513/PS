@@ -29,7 +29,7 @@ public class Main {
         }
         is = false;
         for (int i = 0; i < N; i++) {
-            dfs(new boolean[N + 1], i, 0);
+            dfs(new boolean[N], i, 0);
             if (is) {
                 break;
             }
