@@ -22,7 +22,7 @@ class Vertex implements Comparable<Vertex>{
 public class Solution {
 
     static List<Vertex>[] graph;
-    static BitSet visited;
+    static boolean[] visited;
     static int[] minEdge;
     static int V, E;
 
@@ -34,7 +34,7 @@ public class Solution {
             V = Integer.parseInt(st.nextToken());
             E = Integer.parseInt(st.nextToken());
             graph = new List[V + 1];
-            visited = new BitSet(V + 1);
+            visited = new boolean[V + 1];
             minEdge = new int[V + 1];
             for (int i = 1; i <= V; i++) {
                 graph[i] = new ArrayList<>();
@@ -60,16 +60,16 @@ public class Solution {
         int cnt = 0;
         while (!pq.isEmpty()) {
             Vertex current = pq.poll();
-            if (minEdge[current.v] < current.cost || visited.get(current.v)) {
+            if (minEdge[current.v] < current.cost || visited[current.v]) {
                 continue;
             }
-            visited.set(current.v);
+            visited[current.v] = true;
             result += current.cost;
             if (++cnt == V) {
                 break;
             }
             for (Vertex nv : graph[current.v]) {
-                if (!visited.get(nv.v) && minEdge[nv.v] > nv.cost) {
+                if (!visited[nv.v] && minEdge[nv.v] > nv.cost) {
                     minEdge[nv.v] = nv.cost;
                     pq.offer(new Vertex(nv.v, nv.cost));
                 }
