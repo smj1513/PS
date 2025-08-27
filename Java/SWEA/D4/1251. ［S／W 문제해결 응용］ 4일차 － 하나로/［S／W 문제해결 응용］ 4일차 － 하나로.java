@@ -2,102 +2,110 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.stream.Stream;
 
 class Island {
     int idx;
-    int x, y;
+    long x, y;
 
-    public Island(int x, int y) {
+    public Island(long x, long y) {
         this.idx = Solution.idx++;
         this.x = x;
         this.y = y;
     }
+
+    long distance(Island other) {
+        long x = this.x - other.x;
+        long y = this.y - other.y;
+        return x * x + y * y;
+    }
 }
 
-class Edge implements Comparable<Edge> {
-    Island from, to;
-    double cost;
+class Vertex implements Comparable<Vertex> {
+    Island v;
+    long cost;
 
-    public Edge(Island from, Island to) {
-        this.from = from;
-        this.to = to;
-        long x = from.x - to.x;
-        long y = from.y - to.y;
-        cost = ((x * x) + (y * y));
+    public Vertex(Island v, long cost) {
+        this.v = v;
+        this.cost = cost;
     }
 
     @Override
-    public int compareTo(Edge o) {
-        return Double.compare(this.cost, o.cost);
+    public int compareTo(Vertex o) {
+        return Long.compare(cost, o.cost);
     }
 }
 
 public class Solution {
-    static int idx;
-    static int[] parent;
-    static int V;
-    static List<Edge> edges;
+    static List<Vertex>[] graph;
+    static boolean[] visited;
+    static long[] distance;
+    static double e;
     static Island[] islands;
-    static double E;
+    static int idx, V;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
         for (int tc = 1; tc <= T; tc++) {
-            edges = new ArrayList<>();
             idx = 0;
             V = Integer.parseInt(br.readLine());
-            int[] xList = Stream.of(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            int[] yList = Stream.of(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            E = Double.parseDouble(br.readLine());
-            parent = new int[V];
+            long[] xList = Stream.of(br.readLine().split(" ")).mapToLong(Long::parseLong).toArray();
+            long[] yList = Stream.of(br.readLine().split(" ")).mapToLong(Long::parseLong).toArray();
+            e = Double.parseDouble(br.readLine());
+            graph = new List[V];
             for (int i = 0; i < V; i++) {
-                parent[i] = i;
+                graph[i] = new ArrayList<>();
             }
+            visited = new boolean[V];
+            distance = new long[V];
+            Arrays.fill(distance, Long.MAX_VALUE);
             islands = new Island[V];
             for (int i = 0; i < V; i++) {
-                int x = xList[i];
-                int y = yList[i];
+                long x = xList[i];
+                long y = yList[i];
                 islands[i] = new Island(x, y);
             }
             for (int i = 0; i < V; i++) {
                 for (int j = i + 1; j < V; j++) {
-                    edges.add(new Edge(islands[i], islands[j]));
+                    Island a = islands[i];
+                    Island b = islands[j];
+                    long cost = a.distance(b);
+                    graph[i].add(new Vertex(b, cost));
+                    graph[j].add(new Vertex(a, cost));
                 }
             }
-            Collections.sort(edges);
-            int cnt = 0;
-            double cost = 0;
-            for (Edge edge : edges) {
-                if (union(edge.from.idx, edge.to.idx)) {
-                    cost += edge.cost;
-                    if (++cnt == V - 1) break;
+            System.out.println("#" + tc + " " + Math.round(prim(0)));
+        }
+    }
+
+    public static double prim(int start) {
+        PriorityQueue<Vertex> pq = new PriorityQueue<>();
+        long result = 0;
+        int cnt = 0;
+        pq.add(new Vertex(islands[start], 0));
+        distance[start] = 0;
+        while (!pq.isEmpty()) {
+            Vertex current = pq.poll();
+            if (visited[current.v.idx] || distance[current.v.idx] < current.cost) {
+                continue;
+            }
+            visited[current.v.idx] = true;
+            result += current.cost;
+            if (++cnt == V) {
+                break;
+            }
+            for (Vertex nv : graph[current.v.idx]) {
+                if (!visited[nv.v.idx] && distance[nv.v.idx] > nv.cost) {
+                    distance[nv.v.idx] = nv.cost;
+                    pq.offer(new Vertex(nv.v, nv.cost));
                 }
             }
-            System.out.println("#" + tc + " " + Math.round(cost * E));
         }
+        return result * e;
     }
-
-
-    public static boolean union(int a, int b) {
-        int fa = find(a);
-        int fb = find(b);
-        if (fa != fb) {
-            parent[fb] = fa;
-            return true;
-        }
-        return false;
-    }
-
-    public static int find(int a) {
-        if (parent[a] == a) {
-            return a;
-        } else {
-            return parent[a] = find(parent[a]);
-        }
-    }
-
-
 }
