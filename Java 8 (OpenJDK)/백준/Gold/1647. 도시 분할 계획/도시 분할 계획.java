@@ -2,71 +2,83 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
 
-class Edge implements Comparable<Edge> {
-	int from, to, cost;
+class Vertex implements Comparable<Vertex> {
+	int to;
+	int cost;
 
-	public Edge(int from, int to, int cost) {
-		this.from = from;
+	public Vertex(int to, int cost) {
 		this.to = to;
 		this.cost = cost;
 	}
 
 	@Override
-	public int compareTo(Edge o) {
+	public int compareTo(Vertex o) {
 		return this.cost - o.cost;
 	}
 }
 
 public class Main {
-	static Edge[] graph; //그래프를 간선의 집합으로 표현
-	static int[] parent;
+	static List<Vertex>[] graph;
 	static int V, E;
+	static boolean[] visited;
+	static int[] inEdge;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		V = Integer.parseInt(st.nextToken());
 		E = Integer.parseInt(st.nextToken());
-		graph = new Edge[E];
-		parent = new int[V + 1];
-		for (int i = 1; i <= V; i++) {
-			parent[i] = i;
+		graph = new List[V + 1];
+		for (int i = 0; i <= V; i++) {
+			graph[i] = new ArrayList<>();
 		}
+		visited = new boolean[V + 1];
+		inEdge = new int[V + 1];
+		Arrays.fill(inEdge, Integer.MAX_VALUE);
+		int start = 0, minCost = Integer.MAX_VALUE;
 		for (int i = 0; i < E; i++) {
 			st = new StringTokenizer(br.readLine());
-			graph[i] = new Edge(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
-		}
-		Arrays.sort(graph);
-		int result = 0;
-		int maxCost = 0;
-		for (Edge edge: graph){
-			if(union(edge.from, edge.to)){
-				result += edge.cost;
-				maxCost = Math.max(maxCost, edge.cost);
+			int from = Integer.parseInt(st.nextToken());
+			int to = Integer.parseInt(st.nextToken());
+			int cost = Integer.parseInt(st.nextToken());
+			graph[from].add(new Vertex(to, cost));
+			graph[to].add(new Vertex(from, cost));
+			if (minCost > cost) {
+				start = from;
 			}
 		}
-		System.out.println(result-maxCost);
+		int mstCost = prim(1);
+		System.out.println(mstCost);
 	}
 
-
-	static boolean union(int a, int b) {
-		int fa = find(a);
-		int fb = find(b);
-		if (fa != fb) {
-			parent[fb] = fa;
-			return true;
+	public static int prim(int start) {
+		PriorityQueue<Vertex> pq = new PriorityQueue<>();
+		pq.add(new Vertex(start, 0));
+		inEdge[start] = 0;
+		int result = 0;
+		int cnt = 0;
+		int maxCost = 0;
+		while (!pq.isEmpty()) {
+			Vertex current = pq.poll();
+			if (visited[current.to]) {
+				continue;
+			}
+			visited[current.to] = true;
+			result += current.cost;
+			maxCost = Math.max(current.cost, maxCost);
+			if (++cnt == V) {
+				result -= maxCost;
+				break;
+			}
+			for (Vertex nv : graph[current.to]) {
+				if (!visited[nv.to] && inEdge[nv.to] > nv.cost) {
+					pq.offer(new Vertex(nv.to, nv.cost));
+					inEdge[nv.to] = nv.cost;
+				}
+			}
 		}
-		return false;
-	}
-
-	static int find(int a) {
-		if (parent[a] == a) {
-			return a;
-		} else {
-			return parent[a] = find(parent[a]);
-		}
+		return result;
 	}
 }
