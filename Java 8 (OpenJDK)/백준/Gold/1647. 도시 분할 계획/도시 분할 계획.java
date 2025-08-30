@@ -49,7 +49,7 @@ public class Main {
 				start = from;
 			}
 		}
-		int mstCost = prim(1);
+		int mstCost = prim(start);
 		System.out.println(mstCost);
 	}
 
