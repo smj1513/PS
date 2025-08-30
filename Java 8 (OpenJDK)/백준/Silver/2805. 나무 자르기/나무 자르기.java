@@ -5,44 +5,40 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int[] trees;
-    static int N, M;
-    static int boundary = 0;
-    static int max = 0;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        trees = new int[N];
-        String[] f = br.readLine().split(" ");
-        for (int i = 0; i < N; i++) {
-            trees[i] = Integer.parseInt(f[i]);
-            max = Math.max(trees[i], max);
-        }
+	static int[] tree;
+	//찾아야할 최적 해 = 높이
+	//시작점, 끝점 = 가장 작은 나무 높이, 가장 큰 나무 높이
+	static int start, end;
 
-        while (boundary < max) {
-            int mid = (boundary + max) / 2;
-            long sum = 0;
-            for (int tree : trees) {
-                //나무가 잘렸다면? -> 나무의 높이가 톱의 높이보다 높은 경우
-                if (tree - mid > 0) {
-                    sum += (tree - mid);
-                }
-            }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken()); //파라미터 개수
+		long M = Long.parseLong(st.nextToken()); //찾아야할 최적 해
+		tree = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			tree[i] = Integer.parseInt(st.nextToken());
+			end = Math.max(tree[i], end);
+		}
+		long result = parametricSearch(start, end, M);
+		System.out.println(result);
+	}
 
-            if (sum < M) { //잘린 나무의 합이 목표치보다 낮다면?
-                //톱의 높이를 낮춰야함.
-                max = mid;
-            } else { //
-                // 잘린 나무의 합이 목표치 보다 높다면?
-                //톱의 높이를 높여야함.
-                boundary = mid + 1;
-            }
-        }
-
-        System.out.println(boundary - 1);
-
-    }
+	public static long parametricSearch(long start, long end, long target) {
+		while (start < end) {
+			long mid = start + (end - start) / 2; //톱 높이
+			long total = 0;
+			for (int tr : tree) {
+				total += (mid > tr ? 0 : (tr - mid)); //톱날 높이보다 나무가 작으면 안잘리니까 0
+			}
+			if (total < target){ //목표치 보다 적게 잘랐을 경우 톱 높이를 낮춘다. // lower bound
+				end = mid;
+			}else{
+				start = mid + 1; //
+			}
+		}
+		return end - 1;
+	}
 }
