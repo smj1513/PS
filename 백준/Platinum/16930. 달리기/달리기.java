@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -10,8 +9,8 @@ public class Main {
     static char[][] map;
     static int[][] visited;
     static int N, M, K;
-    static final int[] dx = { -1, 1, 0, 0 };
-    static final int[] dy = { 0, 0, -1, 1 };
+    static final int[] dx = {-1, 1, 0, 0};
+    static final int[] dy = {0, 0, -1, 1};
     static int startX, startY;
     static int endX, endY;
 
@@ -43,24 +42,23 @@ public class Main {
 
     public static int bfs() {
         Queue<int[]> queue = new ArrayDeque<>();
-        queue.offer(new int[] {startX,startY});
+        queue.offer(new int[]{startX, startY});
         visited[startX][startY] = 1;
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             int[] current = queue.poll();
             int currentTime = visited[current[0]][current[1]];
 
-            for(int i = 0 ; i < 4 ;i++) {
-                for(int k = 1; k <= K ;k++) {
-                    int nx = current[0] + dx[i]*k;
-                    int ny = current[1] + dy[i]*k;
+            for (int i = 0; i < 4; i++) {
+                for (int k = 1; k <= K; k++) {
+                    int nx = current[0] + dx[i] * k;
+                    int ny = current[1] + dy[i] * k;
 
                     // 1. 맵 밖으로 나가거나 벽을 만나면 해당 방향으로 더는 진행 불가
                     if (!isValid(nx, ny) || map[nx][ny] == '#') {
                         break;
                     }
 
-                    // 2. ✨ 핵심 최적화 조건문 ✨
-                    //    이미 방문한 곳인데, 현재 경로보다 더 빨리 도착한 경로가 있다면 더 볼 필요 없음
+                    //이미 방문한 곳인데, 현재 경로보다 더 빨리 도착한 경로가 있다면 더 볼 필요 없음
                     if (visited[nx][ny] != 0 && visited[nx][ny] < currentTime + 1) {
                         break;
                     }
@@ -70,13 +68,12 @@ public class Main {
                         continue;
                     }
 
-                    // 4. 새로운 지점 발견
+                    // 4. 목표 지점 도달
                     if (nx == endX && ny == endY) {
                         return currentTime;
                     }
-
                     visited[nx][ny] = currentTime + 1;
-                    queue.offer(new int[] {nx, ny});
+                    queue.offer(new int[]{nx, ny});
                 }
             }
         }
