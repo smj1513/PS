@@ -44,6 +44,9 @@ public class Main {
 			if (visited[x][y]) {
 				continue;
 			}
+			if(x == M-1 && y==N-1){
+				break;
+			}
 			visited[x][y] = true;
 			for (int i = 0; i < 4; i++) {
 				int nx = x + dx[i];
