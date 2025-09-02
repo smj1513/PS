@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +33,7 @@ public class Main {
 	}
 
 	public static void dijkstra() {
-		PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> distance[a[0]][a[1]]));
+		PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> distance[a[0]][a[1]] - distance[b[0]][b[1]]);
 		distance[0][0] = 0;
 		pq.offer(new int[]{0, 0});
 		while (!pq.isEmpty()) {
@@ -44,17 +43,16 @@ public class Main {
 			if (visited[x][y]) {
 				continue;
 			}
-			if(x == M-1 && y==N-1){
+			if (x == M - 1 && y == N - 1) {
 				break;
 			}
 			visited[x][y] = true;
 			for (int i = 0; i < 4; i++) {
 				int nx = x + dx[i];
 				int ny = y + dy[i];
-				if (isValid(nx, ny) && !visited[nx][ny] ) {
-					if(distance[nx][ny] > distance[x][y] + map[nx][ny]){
+				if (isValid(nx, ny) && !visited[nx][ny] && distance[nx][ny] > distance[x][y] + map[nx][ny]) {
 					distance[nx][ny] = distance[x][y] + map[nx][ny];
-					pq.offer(new int[]{nx, ny});}
+					pq.offer(new int[]{nx, ny});
 				}
 			}
 		}
