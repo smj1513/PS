@@ -1,7 +1,7 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 class Knap {
@@ -31,19 +31,20 @@ public class Main {
             int w = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
             knaps[i] = new Knap(w, v);
+            Arrays.fill(dp[i], -1);
         }
         System.out.println(dfs(N, K));
     }
 
     public static int dfs(int idx, int boundary) {
-        if (dp[idx][boundary] != 0) {
+        if (dp[idx][boundary] != -1) {
             return dp[idx][boundary];
         }
         if (idx == 0 || boundary == 0) {
             return 0;
-        } else if (idx > 0 && knaps[idx].w > boundary) {
+        } else if (knaps[idx].w > boundary) {
             dp[idx][boundary] = dfs(idx - 1, boundary);
-        } else if (idx > 0 && knaps[idx].w <= boundary) {
+        } else if (knaps[idx].w <= boundary) {
             dp[idx][boundary] = Math.max(knaps[idx].v + dfs(idx - 1, boundary - knaps[idx].w), dfs(idx - 1, boundary));
         }
         return dp[idx][boundary];
