@@ -37,11 +37,15 @@ public class Main {
                 }
             }
         }
+        StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                System.out.print((distance[i][j] == INF ? 0 : distance[i][j]) + " ");
+                sb.append(distance[i][j] == INF ? 0 : distance[i][j]).append(" ");
             }
-            System.out.println();
+            if (i != n) {
+                sb.append("\n");
+            }
         }
+        System.out.println(sb);
     }
 }
