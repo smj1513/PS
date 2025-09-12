@@ -9,6 +9,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
         for (int tc = 1; tc <= T; tc++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             int N = Integer.parseInt(st.nextToken());
@@ -49,8 +50,9 @@ public class Main {
                     idx = i;
                 }
             }
-            System.out.println(idx);
+            sb.append(idx).append("\n");
         }
+        System.out.println(sb);
 
     }
 }
