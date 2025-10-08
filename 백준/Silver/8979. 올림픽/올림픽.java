@@ -38,12 +38,18 @@ public class Main {
             countries[i] = new Country(num, gold, silver, bronze);
         }
         Arrays.sort(countries);
+        Country prev = null;
+        int j = 0;
         for (int i = 0; i < countries.length; i++) {
             Country country = countries[i];
+            if(prev != null && country.compareTo(prev) != 0){
+                j = i;
+            }
             if (country.num == K) {
-                System.out.println(i+1);
+                System.out.println(j+1);
                 return;
             }
+            prev = country;
         }
     }
 }
