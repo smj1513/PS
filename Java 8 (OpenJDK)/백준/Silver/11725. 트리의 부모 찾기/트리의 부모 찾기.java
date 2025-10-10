@@ -7,6 +7,7 @@ public class Main {
 	static boolean[] visited;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
 		int N = Integer.parseInt(br.readLine());
 		graph = new List[N+1];
 		visited = new boolean[N+1];
@@ -24,8 +25,9 @@ public class Main {
 		dfs(1);
 		for (int i = 2;  i <=N;i++){
 			int a = parent[i];
-			System.out.println(a);
+			sb.append(a).append("\n");
 		}
+		System.out.println(sb);
 	}
 	public static void dfs(int v){
 		visited[v] = true;
