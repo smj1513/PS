@@ -24,7 +24,6 @@ public class Main {
     static int V, E;
     static int M, x, S, y;
     static List<Vertex>[] graph;
-    static int macBoundary, starBoundary;
     static int[] macdoList;
     static Set<Integer> macSet = new HashSet<>();
     static Set<Integer> starSet = new HashSet<>();
@@ -57,8 +56,8 @@ public class Main {
         S = Integer.parseInt(st.nextToken());
         y = Integer.parseInt(st.nextToken());
         starList = Stream.of(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        int[] macMin = minDistance(macdoList, macSet);
-        int[] starMin = minDistance(starList, starSet);
+        int[] macMin = minDistance(macdoList, macSet, x);
+        int[] starMin = minDistance(starList, starSet, y);
         int min = Integer.MAX_VALUE;
         for (int i = 1; i <= V; i++) {
             int macDis = macMin[i];
@@ -71,7 +70,7 @@ public class Main {
 
     }
 
-    public static int[] minDistance(int[] start, Set<Integer> temp) {
+    public static int[] minDistance(int[] start, Set<Integer> temp, int maxBoundary) {
         PriorityQueue<Vertex> pq = new PriorityQueue<>();
         int[] distance = new int[V + 1];
         Arrays.fill(distance, 1_000_000_000);
@@ -80,15 +79,16 @@ public class Main {
             pq.offer(new Vertex(s, 0));
             distance[s] = 0;
         }
-        boolean[] visited = new boolean[V + 1];
         while (!pq.isEmpty()) {
             Vertex cur = pq.poll();
-            if (visited[cur.v] && cur.w > distance[cur.v]) {
+            if (cur.w > distance[cur.v]) {
                 continue;
             }
-            visited[cur.v] = true;
+            if(cur.w > maxBoundary){
+                continue;
+            }
             for (Vertex nv : graph[cur.v]) {
-                if (!visited[nv.v] && distance[nv.v] > distance[cur.v] + nv.w) {
+                if (distance[nv.v] > distance[cur.v] + nv.w) {
                     distance[nv.v] = distance[cur.v] + nv.w;
                     pq.offer(new Vertex(nv.v, distance[nv.v]));
                 }
